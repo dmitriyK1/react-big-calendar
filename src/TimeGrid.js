@@ -178,7 +178,9 @@ export default class TimeGrid extends Component {
         {this.renderHeader(range, allDayEvents, width)}
 
         <div ref='content' className='rbc-time-content'>
-          <div ref='timeIndicator' className='rbc-current-time-indicator' />
+          <div ref='timeIndicator' className='rbc-current-time-indicator'>
+            <div ref='timeIndicatorDot' className='rbc-current-time-indicator-dot' />
+          </div>
 
           <TimeColumn
             {...this.props}
@@ -395,6 +397,7 @@ export default class TimeGrid extends Component {
     const secondsPassed = dates.diff(now, min, 'seconds');
 
     const timeIndicator = this.refs.timeIndicator;
+    const timeIndicatorDot = this.refs.timeIndicatorDot;
     const factor = secondsPassed / secondsGrid;
     const timeGutter = this._gutters[this._gutters.length - 1];
 
@@ -406,6 +409,8 @@ export default class TimeGrid extends Component {
       timeIndicator.style[rtl ? 'left' : 'right'] = 0;
       timeIndicator.style[rtl ? 'right' : 'left'] = timeGutter.offsetWidth + 'px';
       timeIndicator.style.top = offset + 'px';
+
+      timeIndicatorDot.style[rtl ? 'right' : 'left'] = offset + 'px';
     } else {
       timeIndicator.style.display = 'none';
     }
