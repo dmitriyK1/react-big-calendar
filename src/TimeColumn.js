@@ -15,7 +15,7 @@ export default class TimeColumn extends Component {
     min: PropTypes.instanceOf(Date).isRequired,
     max: PropTypes.instanceOf(Date).isRequired,
     showLabels: PropTypes.bool,
-    timeGutterFormat: PropTypes.string,
+    timeGutterFormat: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
     type: PropTypes.string.isRequired,
     className: PropTypes.string,
 
