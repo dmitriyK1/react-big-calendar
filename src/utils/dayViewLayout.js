@@ -170,7 +170,7 @@ let getYStyles = (idx, {
 export default function getStyledEvents ({
   events: unsortedEvents, startAccessor, endAccessor, min, totalMin, step
 }) {
-  let OVERLAP_MULTIPLIER = 0.3;
+  let OVERLAP_MULTIPLIER = 0.95;
   let events = sort(unsortedEvents, { startAccessor, endAccessor });
   let helperArgs = { events, startAccessor, endAccessor, min, totalMin, step };
   let styledEvents = [];
@@ -217,8 +217,21 @@ export default function getStyledEvents ({
         let { style: parentStyle } = styledEvents[parentIdx];
         let spaceOccupiedByParent = parentStyle.width + parentStyle.xOffset;
         let columns = Math.min(group.length, nbrOfColumns);
-        let width = (100 - spaceOccupiedByParent) / columns;
-        let xAdjustment = spaceOccupiedByParent * OVERLAP_MULTIPLIER;
+
+        let xAdjustment = 0;
+        let width;
+        let xOffset;
+
+        if (group.length === 1) {
+          width = 100;
+          xOffset = 5 * (i + 1);
+        } else {
+          width = spaceOccupiedByParent / columns;
+          xAdjustment = spaceOccupiedByParent * OVERLAP_MULTIPLIER;
+          // xOffset = spaceOccupiedByParent + (width * i) - xAdjustment;
+          xOffset = 5 * (i + 1) + (width * i) - xAdjustment;
+        }
+
         let { top, height } = getYStyles(eventIdx, helperArgs);
 
         styledEvents[eventIdx] = {
@@ -226,8 +239,8 @@ export default function getStyledEvents ({
           style: {
             top,
             height,
-            width: width + xAdjustment,
-            xOffset: spaceOccupiedByParent + (width * i) - xAdjustment
+            width: width,
+            xOffset
           }
         }
       })
