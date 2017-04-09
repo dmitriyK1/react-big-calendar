@@ -410,7 +410,7 @@ export default class TimeGrid extends Component {
       timeIndicator.style[rtl ? 'right' : 'left'] = timeGutter.offsetWidth + 'px';
       timeIndicator.style.top = offset + 'px';
 
-      timeIndicatorDot.style[rtl ? 'right' : 'left'] = offset + 'px';
+      timeIndicatorDot.style[rtl ? 'right' : 'left'] = offset - timeGutter.offsetWidth + 'px';
     } else {
       timeIndicator.style.display = 'none';
     }
