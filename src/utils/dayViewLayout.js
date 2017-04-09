@@ -187,7 +187,9 @@ export default function getStyledEvents ({
 
     // Set styles to top level events.
     [idx, ...siblings].forEach((eventIdx, siblingIdx) => {
-      let width = 100 / (siblings.length + 1);
+      const offset = 1;
+      // let width = 100 / (siblings.length + 1);
+      let width = !siblings.length ? 100 / (siblings.length + 1) : 100 / (siblings.length + 1) - offset;
 
       let { top, height } = getYStyles(eventIdx, helperArgs);
 
@@ -197,7 +199,8 @@ export default function getStyledEvents ({
           top,
           height,
           width,
-          xOffset: (width * siblingIdx)
+          // xOffset: width * siblingIdx
+          xOffset: (siblingIdx === 0) ? width * siblingIdx : width * siblingIdx + offset * 2
         }
       }
     });
@@ -222,15 +225,16 @@ export default function getStyledEvents ({
         let xAdjustment = 0;
         let width;
         let xOffset;
+        const offset = 3;
 
         if (group.length === 1) {
           width = 100;
           xOffset = 5 * (i + 1);
         } else {
-          width = spaceOccupiedByParent / columns;
+          width = spaceOccupiedByParent / columns - offset;
           xAdjustment = spaceOccupiedByParent * OVERLAP_MULTIPLIER;
           // xOffset = spaceOccupiedByParent + (width * i) - xAdjustment;
-          xOffset = 5 * (i + 1) + (width * i) - xAdjustment;
+          xOffset = offset * (i + 1) + (width * i);
         }
 
         let { top, height } = getYStyles(eventIdx, helperArgs);
@@ -240,7 +244,7 @@ export default function getStyledEvents ({
           style: {
             top,
             height,
-            width: width,
+            width,
             xOffset
           }
         }
