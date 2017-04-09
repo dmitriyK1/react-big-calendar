@@ -7,9 +7,9 @@ export function startsBefore(date, min) {
 
 export function positionFromDate(date, min, total) {
   if (startsBefore(date, min))
-    return 0
+    return 0;
 
-  let diff = dates.diff(min, dates.merge(min, date), 'minutes')
+  let diff = dates.diff(min, dates.merge(min, date), 'minutes');
   return Math.min(diff, total)
 }
 
@@ -19,37 +19,36 @@ export function positionFromDate(date, min, total) {
  * be placed first.
  */
 let sort = (events, { startAccessor, endAccessor }) => events.sort((a, b) => {
-  let startA = +get(a, startAccessor)
-  let startB = +get(b, startAccessor)
+  let startA = +get(a, startAccessor);
+  let startB = +get(b, startAccessor);
 
   if (startA === startB) {
     return +get(b, endAccessor) - +get(a, endAccessor)
   }
 
   return startA - startB
-})
+});
 
 let getSlot = (event, accessor, min, totalMin) => event && positionFromDate(
   get(event, accessor), min, totalMin
-)
+);
 
 /**
  * Two events are considered siblings if the difference between their
  * start time is less than or equal to 30 minutes.
  */
-let isSibling = (idx1, idx2, { events, startAccessor, endAccessor, min, totalMin }) => {
-  let event1 = events[idx1]
-  let event2 = events[idx2]
+let isSibling = (idx1, idx2, { events, startAccessor, min, totalMin }) => {
+  let event1 = events[idx1];
+  let event2 = events[idx2];
 
-  if (!event1 || !event2) return false
+  if (!event1 || !event2) return false;
 
-  let start1 = getSlot(event1, startAccessor, min, totalMin)
-  let start2 = getSlot(event2, startAccessor, min, totalMin)
-  let end1 = getSlot(event1, endAccessor, min, totalMin)
+  let start1 = getSlot(event1, startAccessor, min, totalMin);
+  let start2 = getSlot(event2, startAccessor, min, totalMin);
 
   // return (Math.abs(start1 - start2) < 60 && start2 < end1)
   return (Math.abs(start1 - start2) <= 30)
-}
+};
 
 /**
  * An event is considered a child of another event if its start time is
@@ -62,13 +61,13 @@ let isChild = (parentIdx, childIdx, {
   if (isSibling(
     parentIdx, childIdx,
     { events, startAccessor, endAccessor, min, totalMin }
-  )) return false
+  )) return false;
 
-  let parentEnd = getSlot(events[parentIdx], endAccessor, min, totalMin)
-  let childStart = getSlot(events[childIdx], startAccessor, min, totalMin)
+  let parentEnd = getSlot(events[parentIdx], endAccessor, min, totalMin);
+  let childStart = getSlot(events[childIdx], startAccessor, min, totalMin);
 
   return parentEnd > childStart
-}
+};
 
 /**
  * Given an event index, siblings directly following it will be found and
@@ -77,8 +76,8 @@ let isChild = (parentIdx, childIdx, {
 let getSiblings = (idx, {
   events, startAccessor, endAccessor, min, totalMin
 }) => {
-  let nextIdx = idx
-  let siblings = []
+  let nextIdx = idx;
+  let siblings = [];
 
   while (isSibling(
     idx, ++nextIdx, { events, startAccessor, endAccessor, min, totalMin })
@@ -87,7 +86,7 @@ let getSiblings = (idx, {
   }
 
   return siblings
-}
+};
 
 /**
  * Given an event index, and a start search position, all child events to that
@@ -98,15 +97,15 @@ let getSiblings = (idx, {
 let getChildGroups = (idx, nextIdx, {
   events, startAccessor, endAccessor, min, totalMin
 }) => {
-  let groups = []
-  let nbrOfColumns = 0
+  let groups = [];
+  let nbrOfColumns = 0;
 
   while (isChild(
     idx, nextIdx,
     { events, startAccessor, endAccessor, min, totalMin }
   )) {
-    let childGroup = [nextIdx]
-    let siblingIdx = nextIdx
+    let childGroup = [nextIdx];
+    let siblingIdx = nextIdx;
 
     while (isSibling(
       nextIdx, ++siblingIdx,
@@ -115,13 +114,13 @@ let getChildGroups = (idx, nextIdx, {
       childGroup.push(siblingIdx)
     }
 
-    nbrOfColumns = Math.max(nbrOfColumns, childGroup.length)
-    groups.push(childGroup)
+    nbrOfColumns = Math.max(nbrOfColumns, childGroup.length);
+    groups.push(childGroup);
     nextIdx = siblingIdx
   }
 
   return { childGroups: groups, nbrOfChildColumns: nbrOfColumns }
-}
+};
 
 /**
  * Returns height and top offset, both in percentage, for an event at
@@ -130,17 +129,17 @@ let getChildGroups = (idx, nextIdx, {
 let getYStyles = (idx, {
   events, startAccessor, endAccessor, min, totalMin, step
 }) => {
-  let event = events[idx]
-  let start = getSlot(event, startAccessor, min, totalMin)
-  let end = Math.max(getSlot(event, endAccessor, min, totalMin), start + step)
-  let top = start / totalMin * 100
-  let bottom = end / totalMin * 100
+  let event = events[idx];
+  let start = getSlot(event, startAccessor, min, totalMin);
+  let end = Math.max(getSlot(event, endAccessor, min, totalMin), start + step);
+  let top = start / totalMin * 100;
+  let bottom = end / totalMin * 100;
 
   return {
     top,
     height: bottom - top
   }
-}
+};
 
 /**
  * Takes an array of unsorted events, and returns a sorted array
@@ -172,25 +171,25 @@ let getYStyles = (idx, {
 export default function getStyledEvents ({
   events: unsortedEvents, startAccessor, endAccessor, min, totalMin, step
 }) {
-  let OVERLAP_MULTIPLIER = 0.3
-  let events = sort(unsortedEvents, { startAccessor, endAccessor })
-  let helperArgs = { events, startAccessor, endAccessor, min, totalMin, step }
-  let styledEvents = []
-  let idx = 0
+  let OVERLAP_MULTIPLIER = 0.3;
+  let events = sort(unsortedEvents, { startAccessor, endAccessor });
+  let helperArgs = { events, startAccessor, endAccessor, min, totalMin, step };
+  let styledEvents = [];
+  let idx = 0;
 
   // One iteration will cover all connected events.
   while (idx < events.length) {
-    let siblings = getSiblings(idx, helperArgs)
+    let siblings = getSiblings(idx, helperArgs);
     let { childGroups, nbrOfChildColumns } = getChildGroups(
       idx, idx + siblings.length + 1, helperArgs
-    )
+    );
     let nbrOfColumns = Math.max(nbrOfChildColumns, siblings.length) + 1;
 
     // Set styles to top level events.
     [idx, ...siblings].forEach((eventIdx, siblingIdx) => {
-      let width = 100 / nbrOfColumns
-      let xAdjustment = width * (nbrOfColumns > 1 ? OVERLAP_MULTIPLIER : 0)
-      let { top, height } = getYStyles(eventIdx, helperArgs)
+      let width = 100 / nbrOfColumns;
+      let xAdjustment = width * (nbrOfColumns > 1 ? OVERLAP_MULTIPLIER : 0);
+      let { top, height } = getYStyles(eventIdx, helperArgs);
 
       styledEvents[eventIdx] = {
         event: events[eventIdx],
@@ -201,27 +200,27 @@ export default function getStyledEvents ({
           xOffset: (width * siblingIdx) - xAdjustment
         }
       }
-    })
+    });
 
     childGroups.forEach(group => {
-      let parentIdx = idx
-      let siblingIdx = 0
+      let parentIdx = idx;
+      let siblingIdx = 0;
 
       // Move child group to sibling if possible, since this will makes
       // room for more events.
       while (isChild(siblings[siblingIdx], group[0], helperArgs)) {
-        parentIdx = siblings[siblingIdx]
+        parentIdx = siblings[siblingIdx];
         siblingIdx++
       }
 
       // Set styles to child events.
       group.forEach((eventIdx, i) => {
-        let { style: parentStyle } = styledEvents[parentIdx]
-        let spaceOccupiedByParent = parentStyle.width + parentStyle.xOffset
-        let columns = Math.min(group.length, nbrOfColumns)
-        let width = (100 - spaceOccupiedByParent) / columns
-        let xAdjustment = spaceOccupiedByParent * OVERLAP_MULTIPLIER
-        let { top, height } = getYStyles(eventIdx, helperArgs)
+        let { style: parentStyle } = styledEvents[parentIdx];
+        let spaceOccupiedByParent = parentStyle.width + parentStyle.xOffset;
+        let columns = Math.min(group.length, nbrOfColumns);
+        let width = (100 - spaceOccupiedByParent) / columns;
+        let xAdjustment = spaceOccupiedByParent * OVERLAP_MULTIPLIER;
+        let { top, height } = getYStyles(eventIdx, helperArgs);
 
         styledEvents[eventIdx] = {
           event: events[eventIdx],
@@ -233,7 +232,7 @@ export default function getStyledEvents ({
           }
         }
       })
-    })
+    });
 
     // Move past all events we just went through
     idx += 1 + siblings.length + childGroups.reduce(
