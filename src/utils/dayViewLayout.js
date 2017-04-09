@@ -187,7 +187,8 @@ export default function getStyledEvents ({
 
     // Set styles to top level events.
     [idx, ...siblings].forEach((eventIdx, siblingIdx) => {
-      let width = 100 / nbrOfColumns;
+      let width = 100 / (siblings.length + 1);
+
       let { top, height } = getYStyles(eventIdx, helperArgs);
 
       styledEvents[eventIdx] = {
