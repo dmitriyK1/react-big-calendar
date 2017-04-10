@@ -227,8 +227,8 @@ export default function getStyledEvents ({
         const offset = 3;
 
         if (group.length === 1) {
-          width = 100;
           xOffset = 5 * (i + 1);
+          width = 100 - xOffset;
         } else {
           width = spaceOccupiedByParent / columns - offset;
           xAdjustment = spaceOccupiedByParent * OVERLAP_MULTIPLIER;
