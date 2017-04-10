@@ -141,6 +141,12 @@ let getYStyles = (idx, {
   }
 };
 
+const isFirstSibling = (siblingIdx) => siblingIdx === 0;
+
+const isLastSibling = (siblingIdx, siblings) => siblingIdx === siblings.length;
+
+const isOnlyNestedElement = (group) => group.length === 1;
+
 /**
  * Takes an array of unsorted events, and returns a sorted array
  * containing the same events, but with an additional style property.
@@ -188,8 +194,29 @@ export default function getStyledEvents ({
     // Set styles to top level events.
     [idx, ...siblings].forEach((eventIdx, siblingIdx) => {
       const offset = 1;
-      // let width = 100 / (siblings.length + 1);
-      let width = !siblings.length ? 100 / (siblings.length + 1) : 100 / (siblings.length + 1) - offset;
+      let width;
+      let xOffset;
+
+      if (siblings.length) {
+        const siblingsNumber = siblings.length + 1;
+        events[eventIdx].overlappingCount = siblingsNumber;
+
+        // styles for top level side-by-side events
+        width = 100 / siblingsNumber - offset;
+        xOffset = (isFirstSibling(siblingIdx))
+          ? 0
+          : (width * siblingIdx) + (offset * siblingIdx);
+
+        // styles for last event in a group of overlapping events
+        if (isLastSibling(siblingIdx, siblings)) {
+          width = 100 / siblingsNumber;
+          xOffset = (width - offset) * siblingIdx + (offset * siblingIdx);
+        }
+      } else {
+        // styles for top level single event
+        width = 100;
+        xOffset = 0;
+      }
 
       let { top, height } = getYStyles(eventIdx, helperArgs);
 
@@ -199,13 +226,12 @@ export default function getStyledEvents ({
           top,
           height,
           width,
-          // xOffset: width * siblingIdx
-          xOffset: (siblingIdx === 0) ? width * siblingIdx : width * siblingIdx + offset * 2
+          xOffset
         }
       }
     });
 
-    childGroups.forEach(group => {
+    childGroups.forEach((group, groupIndex) => {
       let parentIdx = idx;
       let siblingIdx = 0;
 
@@ -219,28 +245,45 @@ export default function getStyledEvents ({
       // Set styles to child events.
       group.forEach((eventIdx, i) => {
         let { style: parentStyle } = styledEvents[parentIdx];
-        let spaceOccupiedByParent = parentStyle.width + parentStyle.xOffset;
-        let columns = Math.min(group.length, nbrOfColumns);
+        let { width: parentWidth, xOffset: parentXOffset } = parentStyle;
+        // let columns = Math.min(group.length, nbrOfColumns);
+        const event = events[eventIdx];
 
-        let xAdjustment = 0;
+        const offset = 3;
+        const nestedGroupOffset = 2;
+        const groupsNumber = groupIndex + 1;
+        // const siblingCount = i + 1;
+        const overlappingCount = group.length;
         let width;
         let xOffset;
-        const offset = 3;
 
-        if (group.length === 1) {
-          xOffset = 5 * (i + 1);
+        // styles for not overlapping nested elements
+        if (isOnlyNestedElement(group)) {
+          xOffset = offset * groupsNumber;
           width = 100 - xOffset;
         } else {
-          width = spaceOccupiedByParent / columns - offset;
-          xAdjustment = spaceOccupiedByParent * OVERLAP_MULTIPLIER;
-          // xOffset = spaceOccupiedByParent + (width * i) - xAdjustment;
-          xOffset = offset * (i + 1) + (width * i);
+          event.overlappingCount = group.length;
+          // width = (parentWidth / columns) - offset;
+          // xOffset = parentXOffset + (offset * siblingCount) + (width * i);
+
+          width = (parentWidth - offset * groupIndex) / overlappingCount - nestedGroupOffset;
+
+          const groupOffset = nestedGroupOffset * groupsNumber;
+          const childOffsetInGroup = width * i;
+
+          if (isFirstSibling(i) && groupIndex === 0) {
+            xOffset = parentXOffset + childOffsetInGroup + groupOffset + 1;
+          } else if (isFirstSibling(i)) {
+            xOffset = parentXOffset + childOffsetInGroup + groupOffset + offset;
+          } else {
+            xOffset = parentXOffset + childOffsetInGroup + groupOffset + nestedGroupOffset * i;
+          }
         }
 
         let { top, height } = getYStyles(eventIdx, helperArgs);
 
         styledEvents[eventIdx] = {
-          event: events[eventIdx],
+          event,
           style: {
             top,
             height,
