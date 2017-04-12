@@ -143,8 +143,6 @@ let getYStyles = (idx, {
 
 const isFirstSibling = (siblingIdx) => siblingIdx === 0;
 
-const isLastSibling = (siblingIdx, siblings) => siblingIdx === siblings.length;
-
 const isOnlyNestedElement = (group) => group.length === 1;
 
 /**
@@ -193,7 +191,6 @@ export default function getStyledEvents ({
 
     // Set styles to top level events.
     [idx, ...siblings].forEach((eventIdx, siblingIdx) => {
-      const offset = 1;
       let width;
       let xOffset;
 
@@ -202,16 +199,10 @@ export default function getStyledEvents ({
         events[eventIdx].overlappingCount = siblingsNumber;
 
         // styles for top level side-by-side events
-        width = 100 / siblingsNumber - offset;
+        width = 100 / siblingsNumber;
         xOffset = (isFirstSibling(siblingIdx))
           ? 0
-          : (width * siblingIdx) + (offset * siblingIdx);
-
-        // styles for last event in a group of overlapping events
-        if (isLastSibling(siblingIdx, siblings)) {
-          width = 100 / siblingsNumber;
-          xOffset = (width - offset) * siblingIdx + (offset * siblingIdx);
-        }
+          : width * siblingIdx;
       } else {
         // styles for top level single event
         width = 100;
@@ -251,33 +242,21 @@ export default function getStyledEvents ({
 
         const offset = 3;
         const nestedGroupOffset = 2;
-        const groupsNumber = groupIndex + 1;
-        // const siblingCount = i + 1;
+        const groupNumber = groupIndex + 1;
         const overlappingCount = group.length;
         let width;
         let xOffset;
 
         // styles for not overlapping nested elements
         if (isOnlyNestedElement(group)) {
-          xOffset = offset * groupsNumber;
+          xOffset = offset * groupNumber;
           width = 100 - xOffset;
         } else {
-          event.overlappingCount = group.length;
-          // width = (parentWidth / columns) - offset;
-          // xOffset = parentXOffset + (offset * siblingCount) + (width * i);
-
-          width = (parentWidth - offset * groupIndex) / overlappingCount - nestedGroupOffset;
-
-          const groupOffset = nestedGroupOffset * groupsNumber;
+          const groupOffset = nestedGroupOffset * groupNumber;
+          width = ((parentWidth - offset * groupIndex) / overlappingCount) - (offset / overlappingCount);
           const childOffsetInGroup = width * i;
-
-          if (isFirstSibling(i) && groupIndex === 0) {
-            xOffset = parentXOffset + childOffsetInGroup + groupOffset + 1;
-          } else if (isFirstSibling(i)) {
-            xOffset = parentXOffset + childOffsetInGroup + groupOffset + offset;
-          } else {
-            xOffset = parentXOffset + childOffsetInGroup + groupOffset + nestedGroupOffset * i;
-          }
+          xOffset = parentXOffset + childOffsetInGroup + groupOffset;
+          event.overlappingCount = overlappingCount;
         }
 
         let { top, height } = getYStyles(eventIdx, helperArgs);
