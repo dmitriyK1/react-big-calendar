@@ -253,6 +253,7 @@ export default function getStyledEvents ({
           const childOffsetInGroup = width * i;
           xOffset = parentXOffset + childOffsetInGroup + groupOffset;
           event.overlappingCount = overlappingCount;
+          event.groupNumber = groupNumber;
         }
 
         let { top, height } = getYStyles(eventIdx, helperArgs);
