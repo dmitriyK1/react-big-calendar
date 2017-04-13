@@ -174,7 +174,6 @@ const isOnlyNestedElement = (group) => group.length === 1;
 export default function getStyledEvents ({
   events: unsortedEvents, startAccessor, endAccessor, min, totalMin, step
 }) {
-  let OVERLAP_MULTIPLIER = 0.95;
   let events = sort(unsortedEvents, { startAccessor, endAccessor });
   let helperArgs = { events, startAccessor, endAccessor, min, totalMin, step };
   let styledEvents = [];
@@ -183,11 +182,9 @@ export default function getStyledEvents ({
   // One iteration will cover all connected events.
   while (idx < events.length) {
     let siblings = getSiblings(idx, helperArgs);
-    let { childGroups, nbrOfChildColumns } = getChildGroups(
+    let { childGroups } = getChildGroups(
       idx, idx + siblings.length + 1, helperArgs
     );
-    let nbrOfColumns = Math.max(nbrOfChildColumns, siblings.length) + 1;
-
     // Set styles to top level events.
     [idx, ...siblings].forEach((eventIdx, siblingIdx) => {
       let width;
