@@ -238,7 +238,7 @@ export default function getStyledEvents ({
         const event = events[eventIdx];
 
         const offset = 3;
-        const nestedGroupOffset = 2;
+        const nestedGroupOffset = 3;
         const groupNumber = groupIndex + 1;
         const overlappingCount = group.length;
         let width;
