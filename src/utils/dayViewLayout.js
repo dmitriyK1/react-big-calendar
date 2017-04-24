@@ -264,6 +264,8 @@ export default function getStyledEvents ({
 
         let { top, height } = getYStyles(eventIdx, helperArgs);
 
+        event.smallEvent = width < 30;
+
         styledEvents[eventIdx] = {
           event,
           style: {
