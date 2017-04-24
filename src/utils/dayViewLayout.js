@@ -191,10 +191,14 @@ export default function getStyledEvents ({
       let xOffset;
 
       if (siblings.length) {
+        // styles for top level side-by-side events
+
         const siblingsNumber = siblings.length + 1;
         events[eventIdx].overlappingCount = siblingsNumber;
 
-        // styles for top level side-by-side events
+        events[eventIdx].groupStart = (siblingIdx === 0);
+        events[eventIdx].groupEnd = (siblingIdx === siblings.length);
+
         width = 100 / siblingsNumber;
         xOffset = (isFirstSibling(siblingIdx))
           ? 0
@@ -254,6 +258,8 @@ export default function getStyledEvents ({
           xOffset = parentXOffset + childOffsetInGroup + groupOffset;
           event.overlappingCount = overlappingCount;
           event.groupNumber = groupNumber;
+          event.groupStart = (i === 0);
+          event.groupEnd = (i === group.length - 1);
         }
 
         let { top, height } = getYStyles(eventIdx, helperArgs);
