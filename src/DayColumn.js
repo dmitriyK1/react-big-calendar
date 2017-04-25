@@ -164,8 +164,8 @@ class DaySlot extends React.Component {
           <div
             style={{
               ...xStyle,
-              top: `${top}%`,
-              height: `${height}%`,
+              top: `calc(${top}% + 1px)`,
+              height: `calc(${height}% - 1px)`,
               [isRtl ? 'right' : 'left']: `${Math.max(0, xOffset)}%`,
               width: `${width}%`
             }}
