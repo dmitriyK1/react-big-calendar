@@ -166,23 +166,24 @@ class DateContentRow extends React.Component {
 
     return (
       <div className={className}>
-        <BackgroundCells
-          rtl={rtl}
-          range={range}
-          selectable={selectable}
-          container={this.getContainer}
-          onSelectStart={onSelectStart}
-          onSelectEnd={onSelectEnd}
-          onSelectSlot={this.handleSelectSlot}
-          cellWrapperComponent={dateCellWrapper}
-        />
-
         <div className='rbc-row-content'>
           {renderHeader && (
             <div className='rbc-row' ref={this.createHeadingRef}>
               {range.map(this.renderHeadingCell)}
             </div>
           )}
+
+          <BackgroundCells
+            rtl={rtl}
+            range={range}
+            selectable={selectable}
+            container={this.getContainer}
+            onSelectStart={onSelectStart}
+            onSelectEnd={onSelectEnd}
+            onSelectSlot={this.handleSelectSlot}
+            cellWrapperComponent={dateCellWrapper}
+          />
+
           {levels.map((segs, idx) =>
             <EventRow
               {...props}
