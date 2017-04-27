@@ -232,8 +232,17 @@ export default class TimeGrid extends Component {
     let { isOverflowing } = this.state || {};
 
     let style = {};
-    if (isOverflowing)
-      style[rtl ? 'marginLeft' : 'marginRight'] = scrollbarSize() + 'px';
+    let allDayWrapperStyle = {};
+
+    if (isOverflowing) {
+      let offsetWidth = scrollbarSize();
+
+      if (events.length < 5) {
+        allDayWrapperStyle[rtl ? 'marginLeft' : 'marginRight'] = offsetWidth + 'px';
+      }
+
+      style[rtl ? 'paddingLeft' : 'paddingRight'] = offsetWidth + 'px';
+    }
 
     return (
       <div
@@ -242,9 +251,8 @@ export default class TimeGrid extends Component {
           'rbc-time-header',
           isOverflowing && 'rbc-overflowing'
         )}
-        style={style}
       >
-        <div className='rbc-row'>
+        <div className='rbc-row' style={style}>
           <div
             className='rbc-label rbc-header-gutter'
             style={{ width }}
@@ -259,26 +267,31 @@ export default class TimeGrid extends Component {
           >
             { message(messages).allDay }
           </div>
-          <DateContentRow
-            now={now}
-            minRows={2}
-            range={range}
-            rtl={this.props.rtl}
-            events={events}
-            className='rbc-allday-cell'
-            selectable={selectable}
-            onSelectSlot={this.handleSelectAllDaySlot}
-            dateCellWrapper={components.dateCellWrapper}
-            eventComponent={this.props.components.event}
-            eventWrapperComponent={this.props.components.eventWrapper}
-            titleAccessor={this.props.titleAccessor}
-            startAccessor={this.props.startAccessor}
-            endAccessor={this.props.endAccessor}
-            allDayAccessor={this.props.allDayAccessor}
-            eventPropGetter={this.props.eventPropGetter}
-            selected={this.props.selected}
-            onSelect={this.handleSelectEvent}
-          />
+          <div
+            className="rbc-allday-cell-wrapper"
+            style={allDayWrapperStyle}
+          >
+            <DateContentRow
+              allDayAccessor={this.props.allDayAccessor}
+              className='rbc-allday-cell'
+              dateCellWrapper={components.dateCellWrapper}
+              endAccessor={this.props.endAccessor}
+              eventComponent={this.props.components.event}
+              eventPropGetter={this.props.eventPropGetter}
+              eventWrapperComponent={this.props.components.eventWrapper}
+              events={events}
+              minRows={2}
+              now={now}
+              onSelect={this.handleSelectEvent}
+              onSelectSlot={this.handleSelectAllDaySlot}
+              range={range}
+              rtl={this.props.rtl}
+              selectable={selectable}
+              selected={this.props.selected}
+              startAccessor={this.props.startAccessor}
+              titleAccessor={this.props.titleAccessor}
+            />
+          </div>
         </div>
       </div>
     )
