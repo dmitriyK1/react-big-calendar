@@ -420,6 +420,8 @@ export default class TimeGrid extends Component {
   checkAlldayOverflow() {
     if (this._updatingAlldayOverflow) return;
 
+    if (!this.refs.alldaycell || !this.refs.alldaycell.refs.container) return;
+
     let isAlldayOverflowing = this.refs.alldaycell.refs.container.scrollHeight > this.refs.alldaycell.refs.container.clientHeight;
 
     if (this.state.isAlldayOverflowing !== isAlldayOverflowing) {
