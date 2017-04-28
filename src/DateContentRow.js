@@ -167,7 +167,10 @@ class DateContentRow extends React.Component {
     while (levels.length < minRows ) levels.push([])
 
     return (
-      <div className={className}>
+      <div
+        className={className}
+        ref='container'
+      >
         <div className='rbc-row-content'>
           {renderHeader && (
             <div className='rbc-row' ref={this.createHeadingRef}>
