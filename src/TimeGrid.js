@@ -87,6 +87,7 @@ export default class TimeGrid extends Component {
 
   componentDidMount() {
     this.checkOverflow();
+    this.checkAlldayOverflow();
 
     if (this.props.width == null) {
       this.measureGutter()
@@ -109,6 +110,7 @@ export default class TimeGrid extends Component {
     this.applyScroll();
     this.positionTimeIndicator();
     //this.checkOverflow()
+    this.checkAlldayOverflow();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -227,19 +229,22 @@ export default class TimeGrid extends Component {
 
   renderHeader(range, events, width) {
     let { messages, rtl, selectable, components } = this.props;
-    let { isOverflowing } = this.state || {};
+    let { isOverflowing, isAlldayOverflowing } = this.state || {};
 
     let style = {};
     let allDayStyle = {};
+    let offsetWidth = 0;
+
+    if (isOverflowing || !isAlldayOverflowing) {
+      offsetWidth = scrollbarSize();
+    }
 
     if (isOverflowing) {
-      let offsetWidth = scrollbarSize();
-
-      if (events.length < 5) {
-        allDayStyle[rtl ? 'marginLeft' : 'marginRight'] = offsetWidth + 'px';
-      }
-
       style[rtl ? 'paddingLeft' : 'paddingRight'] = offsetWidth + 'px';
+    }
+
+    if (!isAlldayOverflowing) {
+      allDayStyle[rtl ? 'marginLeft' : 'marginRight'] = offsetWidth + 'px';
     }
 
     return (
@@ -272,6 +277,7 @@ export default class TimeGrid extends Component {
             { message(messages).allDay }
           </div>
           <DateContentRow
+            ref='alldaycell'
             minRows={2}
             range={range}
             rtl={this.props.rtl}
@@ -399,6 +405,19 @@ export default class TimeGrid extends Component {
       this._updatingOverflow = true;
       this.setState({ isOverflowing }, () => {
         this._updatingOverflow = false;
+      })
+    }
+  }
+
+  checkAlldayOverflow() {
+    if (this._updatingAlldayOverflow) return;
+
+    let isAlldayOverflowing = this.refs.alldaycell.refs.container.scrollHeight > this.refs.alldaycell.refs.container.clientHeight;
+
+    if (this.state.isAlldayOverflowing !== isAlldayOverflowing) {
+      this._updatingAlldayOverflow = true;
+      this.setState({ isAlldayOverflowing }, () => {
+        this._updatingAlldayOverflow = false;
       })
     }
   }
