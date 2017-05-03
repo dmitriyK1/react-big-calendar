@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import zenscroll from 'zenscroll';
 import cn from 'classnames';
 import { findDOMNode } from 'react-dom';
 
@@ -445,6 +446,8 @@ export default class TimeGrid extends Component {
       timeIndicator.style[rtl ? 'right' : 'left'] = timeGutter.offsetWidth + 'px';
       timeIndicator.style.top = offset + 'px';
 
+      this.focusTimeIndicator();
+
       // timeIndicatorDot.style[rtl ? 'right' : 'left'] = offset - timeGutter.offsetWidth + 'px';
       timeIndicatorDot.style[rtl ? 'right' : 'left'] = '-6px';
     } else {
@@ -459,5 +462,12 @@ export default class TimeGrid extends Component {
 
       this.triggerTimeIndicatorUpdate();
     }, 60000)
+  }
+
+  focusTimeIndicator() {
+    if (!this.refs.content || !this.refs.timeIndicator) return;
+
+    const scroller = zenscroll.createScroller(this.refs.content);
+    scroller.center(this.refs.timeIndicator, 0);
   }
 }
