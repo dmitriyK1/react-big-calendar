@@ -78,7 +78,7 @@ export default class TimeGrid extends Component {
 
   constructor(props) {
     super(props)
-    this.state = { gutterWidth: undefined, isOverflowing: null };
+    this.state = { gutterWidth: undefined, isOverflowing: null, timeIndicatorFocused: false };
     this.handleSelectEvent = this.handleSelectEvent.bind(this)
     this.handleHeaderClick = this.handleHeaderClick.bind(this)
   }
@@ -473,9 +473,13 @@ export default class TimeGrid extends Component {
   }
 
   focusTimeIndicator() {
+    if (this.state.timeIndicatorFocused) return;
+
     if (!this.refs.content || !this.refs.timeIndicator) return;
 
     const scroller = zenscroll.createScroller(this.refs.content);
     scroller.center(this.refs.timeIndicator, 0);
+
+    this.setState({ timeIndicatorFocused: true });
   }
 }
