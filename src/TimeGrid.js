@@ -232,7 +232,6 @@ export default class TimeGrid extends Component {
 
   renderHeader(range, events, width) {
     let { messages, rtl, selectable, components, now } = this.props;
-    let { messages, rtl, selectable, components } = this.props;
     let { isOverflowing, isAlldayOverflowing } = this.state || {};
 
     let style = {};
@@ -283,10 +282,6 @@ export default class TimeGrid extends Component {
           <DateContentRow
             allDayAccessor={this.props.allDayAccessor}
             ref='alldaycell'
-            minRows={2}
-            range={range}
-            rtl={this.props.rtl}
-            events={events}
             className='rbc-allday-cell'
             dateCellWrapper={components.dateCellWrapper}
             endAccessor={this.props.endAccessor}
