@@ -4,6 +4,7 @@ import EventRowMixin from './EventRowMixin'
 import { eventLevels } from './utils/eventLevels'
 import message from './utils/messages'
 import range from 'lodash/range'
+import uniq from 'lodash/uniq';
 
 let isSegmentInSlot = (seg, slot) => seg.left <= slot && seg.right >= slot
 let eventsInSlot = (segments, slot) =>
@@ -90,12 +91,17 @@ class EventEndingRow extends React.Component {
     let messages = message(this.props.messages)
     let count = eventsInSlot(segments, slot)
 
+    const startDates = uniq(segments.map(
+      ({ event }) => event.start.getDate()
+    ));
+
     return count
       ? <a
           key={'sm_' + slot}
           href="#"
           className={'rbc-show-more'}
           onClick={e => this.showMore(slot, e)}
+          data-start-date={`[${startDates}]`}
         >
           {messages.showMore(count)}
         </a>
