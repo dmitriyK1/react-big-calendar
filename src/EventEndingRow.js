@@ -101,7 +101,7 @@ class EventEndingRow extends React.Component {
           href="#"
           className={'rbc-show-more'}
           onClick={e => this.showMore(slot, e)}
-          data-start-date={`[${startDates}]`}
+          data-start-dates={`[${startDates}]`}
         >
           {messages.showMore(count)}
         </a>
