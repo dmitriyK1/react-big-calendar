@@ -76,9 +76,14 @@ let propTypes = {
   ]),
 }
 
+const defaultProps = {
+  hideShowMoreOnClickout: true,
+}
+
 class MonthView extends React.Component {
   static displayName = 'MonthView'
   static propTypes = propTypes
+  static defaultProps = defaultProps
 
   constructor(...args) {
     super(...args)
