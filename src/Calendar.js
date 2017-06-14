@@ -54,6 +54,7 @@ let now = new Date();
  */
 class Calendar extends React.Component {
  static propTypes = {
+   hideShowMoreOnClickout: PropTypes.bool,
 
    /**
     * Props passed to main calendar `<div>`.

@@ -25,6 +25,8 @@ let eventsForWeek = (evts, start, end, props) =>
   evts.filter(e => inRange(e, start, end, props))
 
 let propTypes = {
+  hideShowMoreOnClickout: PropTypes.bool,
+
   events: PropTypes.array.isRequired,
   date: PropTypes.instanceOf(Date),
 
@@ -247,11 +249,11 @@ class MonthView extends React.Component {
 
   renderOverlay () {
     let overlay = (this.state && this.state.overlay) || {}
-    let { components } = this.props
+    let { components, hideShowMoreOnClickout } = this.props
 
     return (
       <Overlay
-        rootClose
+        rootClose={hideShowMoreOnClickout}
         placement="bottom"
         container={this}
         show={!!overlay.position}
