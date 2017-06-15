@@ -16,6 +16,7 @@ const propTypes = {
   selected: PropTypes.object,
   eventComponent: elementType,
   eventWrapperComponent: elementType,
+  onHeadingClick: PropTypes.func,
   dayHeaderFormat: dateFormat
 }
 class Popup extends React.Component {
@@ -53,9 +54,14 @@ class Popup extends React.Component {
       minWidth: width + (width / 2)
     }
 
+    const onClick = (e) => {
+      e.preventDefault()
+      props.onHeadingClick(props.slotStart)
+    };
+
     return (
       <div ref='root' style={style} className='rbc-overlay'>
-        <div className='rbc-overlay-header'>
+        <div className='rbc-overlay-header' onClick={onClick}>
           { localizer.format(props.slotStart, props.dayHeaderFormat, props.culture) }
         </div>
         <div className='rbc-overlay-list'>

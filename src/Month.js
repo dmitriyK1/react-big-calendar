@@ -252,6 +252,11 @@ class MonthView extends React.Component {
     ))
   }
 
+  handleShowMoreHeadingClick = (date) => {
+    this.clearSelection()
+    notify(this.props.onDrillDown, [date, views.DAY])
+  }
+
   renderOverlay () {
     let overlay = (this.state && this.state.overlay) || {}
     let { components, hideShowMoreOnClickout } = this.props
@@ -273,6 +278,7 @@ class MonthView extends React.Component {
           slotStart={overlay.date}
           slotEnd={overlay.end}
           onSelect={this.handleSelectEvent}
+          onHeadingClick={this.handleShowMoreHeadingClick}
         />
       </Overlay>
     )
