@@ -58,17 +58,19 @@ class Popup extends React.Component {
         <div className='rbc-overlay-header'>
           { localizer.format(props.slotStart, props.dayHeaderFormat, props.culture) }
         </div>
-        {
-          events.map((event, idx) =>
-            <EventCell key={idx}
-              {...props}
-              event={event}
-              eventComponent={eventComponent}
-              eventWrapperComponent={eventWrapperComponent}
-              selected={isSelected(event, selected)}
-            />
-          )
-        }
+        <div className='rbc-overlay-list'>
+          {
+            events.map((event, idx) =>
+              <EventCell key={idx}
+                {...props}
+                event={event}
+                eventComponent={eventComponent}
+                eventWrapperComponent={eventWrapperComponent}
+                selected={isSelected(event, selected)}
+              />
+            )
+          }
+        </div>
       </div>
     )
   }
