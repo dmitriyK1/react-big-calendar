@@ -59,8 +59,12 @@ class Popup extends React.Component {
       props.onHeadingClick(props.slotStart)
     };
 
+    const onContainerClick = () => {
+      props.onHeadingClick()
+    }
+
     return (
-      <div ref='root' style={style} className='rbc-overlay'>
+        <div ref='root' style={style} className='rbc-overlay' onClick={onContainerClick}>
         <div className='rbc-overlay-header' onClick={onClick}>
           { localizer.format(props.slotStart, props.dayHeaderFormat, props.culture) }
         </div>

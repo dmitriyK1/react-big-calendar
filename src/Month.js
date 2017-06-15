@@ -254,6 +254,9 @@ class MonthView extends React.Component {
 
   handleShowMoreHeadingClick = (date) => {
     this.clearSelection()
+
+    if (!date) return
+
     notify(this.props.onDrillDown, [date, views.DAY])
   }
 
