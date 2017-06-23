@@ -1,6 +1,6 @@
 {
   "name": "react-big-calendar-next",
-  "version": "0.29.8-pre",
+  "version": "0.29.8",
   "description": "Calendar! with events",
   "author": "Jason Quense <monastic.panic@gmail.com>",
   "repository": "dmitriyK1/react-big-calendar",
