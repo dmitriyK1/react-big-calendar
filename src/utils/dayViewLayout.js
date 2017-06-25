@@ -148,6 +148,13 @@ const isFirstSibling = (siblingIdx) => siblingIdx === 0;
 
 const isOnlyNestedElement = (group) => group.length === 1;
 
+const resetEvent = (event) => {
+  delete event.overlappingCount;
+  delete event.groupNumber;
+  delete event.groupStart;
+  delete event.groupEnd;
+};
+
 /**
  * Takes an array of unsorted events, and returns a sorted array
  * containing the same events, but with an additional style property.
@@ -205,13 +212,15 @@ export default function getStyledEvents ({
         event.groupEnd = siblingIdx === siblings.length;
 
         width = 100 / siblingsNumber;
-        xOffset = (isFirstSibling(siblingIdx))
+        xOffset = isFirstSibling(siblingIdx)
           ? 0
           : width * siblingIdx;
       } else {
         // styles for top level single event
         width = 100;
         xOffset = 0;
+
+        resetEvent(event);
       }
 
       let { top, height } = getYStyles(eventIdx, helperArgs);
@@ -258,6 +267,8 @@ export default function getStyledEvents ({
         if (isOnlyNestedElement(group)) {
           xOffset = offset * groupNumber;
           width = 100 - xOffset;
+
+          resetEvent(event);
         } else {
           const groupOffset = nestedGroupOffset * groupNumber;
           width = ((parentWidth - offset * groupIndex) / overlappingCount) - (offset / overlappingCount);
