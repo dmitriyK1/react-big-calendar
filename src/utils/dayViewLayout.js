@@ -202,6 +202,8 @@ export default function getStyledEvents ({
       let xOffset;
       const event = events[eventIdx];
 
+      resetEvent(event);
+
       if (siblings.length) {
         // styles for top level side-by-side events
 
@@ -219,8 +221,6 @@ export default function getStyledEvents ({
         // styles for top level single event
         width = 100;
         xOffset = 0;
-
-        resetEvent(event);
       }
 
       let { top, height } = getYStyles(eventIdx, helperArgs);
@@ -256,6 +256,8 @@ export default function getStyledEvents ({
         // let columns = Math.min(group.length, nbrOfColumns);
         const event = events[eventIdx];
 
+        resetEvent(event);
+
         const offset = 3;
         const nestedGroupOffset = 3;
         const groupNumber = groupIndex + 1;
@@ -268,7 +270,6 @@ export default function getStyledEvents ({
           xOffset = offset * groupNumber;
           width = 100 - xOffset;
 
-          resetEvent(event);
         } else {
           const groupOffset = nestedGroupOffset * groupNumber;
           width = ((parentWidth - offset * groupIndex) / overlappingCount) - (offset / overlappingCount);
