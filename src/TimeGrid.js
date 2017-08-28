@@ -156,6 +156,7 @@ export default class TimeGrid extends Component {
     let allDayEvents = []
       , rangeEvents = [];
 
+    // TODO: add check to put multiday event in rangeEvents
     events.forEach(event => {
       if (inRange(event, start, end, this.props)) {
         let eStart = get(event, startAccessor)
@@ -231,7 +232,7 @@ export default class TimeGrid extends Component {
   }
 
   renderHeader(range, events, width) {
-    let { messages, rtl, selectable, components, now } = this.props;
+    let { messages, rtl, selectable, components, now, timezone } = this.props;
     let { isOverflowing, isAlldayOverflowing } = this.state || {};
 
     let style = {};
@@ -299,6 +300,7 @@ export default class TimeGrid extends Component {
             selected={this.props.selected}
             startAccessor={this.props.startAccessor}
             titleAccessor={this.props.titleAccessor}
+            timezone={timezone}
           />
         </div>
       </div>
@@ -306,7 +308,7 @@ export default class TimeGrid extends Component {
   }
 
   renderHeaderCells(range){
-    let { dayFormat, culture, components, getDrilldownView } = this.props;
+    let { dayFormat, culture, components, getDrilldownView, timezone } = this.props;
     let HeaderComponent = components.header || Header
 
     return range.map((date, i) => {
@@ -328,7 +330,7 @@ export default class TimeGrid extends Component {
           key={i}
           className={cn(
             'rbc-header',
-            dates.isToday(date) && 'rbc-today',
+            dates.isToday(date, timezone) && 'rbc-today',
           )}
           style={segStyle(1, this.slots)}
         >
@@ -429,18 +431,25 @@ export default class TimeGrid extends Component {
   }
 
   positionTimeIndicator() {
-    const { rtl, min, max } = this.props
-    const now = new Date();
+    const { rtl, min, max, timezone } = this.props
+
+    const now = dates.now(timezone);
 
     const secondsGrid = dates.diff(max, min, 'seconds');
-    const secondsPassed = dates.diff(now, min, 'seconds');
+    let secondsPassed = dates.diff(now, min, 'seconds');
 
     const timeIndicator = this.refs.timeIndicator;
     const timeIndicatorDot = this.refs.timeIndicatorDot;
+
+    if (secondsPassed > dates.SECONDS_IN_DAY) {
+      secondsPassed = secondsPassed - dates.SECONDS_IN_DAY;
+    }
+
     const factor = secondsPassed / secondsGrid;
     const timeGutter = this._gutters[this._gutters.length - 1];
 
-    if (timeGutter && now >= min && now <= max) {
+    // if (timeGutter && now >= min && now <= max) {
+    if (timeGutter) {
       const pixelHeight = timeGutter.offsetHeight;
       const offset = Math.floor(factor * pixelHeight);
 
@@ -453,8 +462,6 @@ export default class TimeGrid extends Component {
 
       // timeIndicatorDot.style[rtl ? 'right' : 'left'] = offset - timeGutter.offsetWidth + 'px';
       timeIndicatorDot.style[rtl ? 'right' : 'left'] = '-6px';
-    } else {
-      timeIndicator.style.display = 'none';
     }
   }
 

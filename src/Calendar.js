@@ -244,7 +244,7 @@ class Calendar extends React.Component {
 
    /**
     * Optionally provide a function that returns an object of className or style props
-    * to be applied to the the time-slot node. Caution! Styles that change layout or 
+    * to be applied to the the time-slot node. Caution! Styles that change layout or
     * position may break the calendar in unexpected ways.
     *
     * ```js
@@ -590,10 +590,10 @@ class Calendar extends React.Component {
  }
 
  handleNavigate = (action, newDate) => {
-   let { view, date, onNavigate } = this.props;
+   let { view, date, onNavigate, timezone } = this.props;
    let ViewComponent = this.getView();
 
-   date = moveDate(action, newDate || date, ViewComponent)
+   date = moveDate(action, newDate || date, ViewComponent, timezone)
 
    onNavigate(date, view, action)
  };

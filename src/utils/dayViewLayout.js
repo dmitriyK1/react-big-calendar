@@ -126,15 +126,23 @@ let getChildGroups = (idx, nextIdx, {
  * the specified index.
  */
 let getYStyles = (idx, {
-  events, startAccessor, endAccessor, min, totalMin, step
+  events, startAccessor, endAccessor, min, totalMin, max, step
 }) => {
   let event = events[idx];
-  let start = getSlot(event, startAccessor, min, totalMin);
+
+  const isMultidayCont = (event[endAccessor] > max ) && (event[startAccessor] < min);
+  const isMultidayStart = (event[endAccessor] > max) && !isMultidayCont;
+  const isMultidayEnd = event[startAccessor] < min && !isMultidayCont;
+
+  let start = isMultidayEnd ? 0 : getSlot(event, startAccessor, min, totalMin);
   let end = Math.max(getSlot(event, endAccessor, min, totalMin), start + step);
   let top = start / totalMin * 100;
   let bottom = end / totalMin * 100;
 
   return {
+    isMultidayStart,
+    isMultidayCont,
+    isMultidayEnd,
     top,
     height: bottom - top
   }
@@ -183,10 +191,10 @@ const resetEvent = (event) => {
  * traversed, so the cursor will be moved past all of them.
  */
 export default function getStyledEvents ({
-  events: unsortedEvents, startAccessor, endAccessor, min, totalMin, step
+  events: unsortedEvents, startAccessor, endAccessor, min, totalMin, step, max
 }) {
   let events = sort(unsortedEvents, { startAccessor, endAccessor });
-  let helperArgs = { events, startAccessor, endAccessor, min, totalMin, step };
+  let helperArgs = { events, startAccessor, endAccessor, min, totalMin, step, max };
   let styledEvents = [];
   let idx = 0;
 
@@ -223,9 +231,12 @@ export default function getStyledEvents ({
         xOffset = 0;
       }
 
-      let { top, height } = getYStyles(eventIdx, helperArgs);
+      let { top, height, isMultidayStart, isMultidayCont, isMultidayEnd } = getYStyles(eventIdx, helperArgs);
 
       event.smallEvent = isSmallEvent(width);
+      event.isMultidayStart = isMultidayStart;
+      event.isMultidayCont = isMultidayCont;
+      event.isMultidayEnd = isMultidayEnd;
 
       styledEvents[eventIdx] = {
         event,
@@ -269,7 +280,6 @@ export default function getStyledEvents ({
         if (isOnlyNestedElement(group)) {
           xOffset = offset * groupNumber;
           width = 100 - xOffset;
-
         } else {
           const groupOffset = nestedGroupOffset * groupNumber;
           width = ((parentWidth - offset * groupIndex) / overlappingCount) - (offset / overlappingCount);

@@ -150,6 +150,7 @@ class DateContentRow extends React.Component {
       eventWrapperComponent,
       onSelectStart,
       onSelectEnd,
+      timezone,
       ...props
     } = this.props;
 
@@ -187,6 +188,7 @@ class DateContentRow extends React.Component {
             onSelectEnd={onSelectEnd}
             onSelectSlot={this.handleSelectSlot}
             cellWrapperComponent={dateCellWrapper}
+            timezone={timezone}
           />
 
           {levels.map((segs, idx) =>

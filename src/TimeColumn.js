@@ -51,7 +51,7 @@ export default class TimeColumn extends Component {
   }
 
   render() {
-    const { className, children, style, now, min, max, step, timeslots } = this.props;
+    const { className, children, style, min, max, step, timeslots, timezone } = this.props;
     const totalMin = dates.diff(min, max, 'minutes')
     const numGroups = Math.ceil(totalMin / (step * timeslots))
     const renderedSlots = []
@@ -60,6 +60,8 @@ export default class TimeColumn extends Component {
     let date = min
     let next = date
     let isNow = false
+
+    const now = dates.now(timezone);
 
     for (var i = 0; i < numGroups; i++) {
       isNow = dates.inRange(

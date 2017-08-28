@@ -164,6 +164,7 @@ class MonthView extends React.Component {
       messages,
       selected,
       now,
+      timezone,
     } = this.props
 
     const { needLimitMeasure, rowLimit } = this.state
@@ -197,6 +198,7 @@ class MonthView extends React.Component {
         eventComponent={components.event}
         eventWrapperComponent={components.eventWrapper}
         dateCellWrapper={components.dateCellWrapper}
+        timezone={timezone}
       />
     )
   }

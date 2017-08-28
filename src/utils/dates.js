@@ -1,6 +1,7 @@
 /* eslint no-fallthrough: off */
 import dateMath from 'date-arithmetic';
 import localizer from '../localizer';
+import moment from 'moment-timezone';
 
 const MILLI = {
   seconds: 1000,
@@ -9,11 +10,15 @@ const MILLI = {
   day: 1000 * 60 * 60 * 24
 }
 
+const DATE_WITHOUT_TIMEZONE_FORMAT = 'YYYY-MM-DD HH:mm:ss'
+
 const MONTHS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 
 let dates = {
 
   ...dateMath,
+
+  SECONDS_IN_DAY: 24 * 60 * 60,
 
   monthsInYear(year){
     let date = new Date(year, 0, 1)
@@ -82,8 +87,8 @@ let dates = {
     return dates.eq(dateA, dateB, 'month')
   },
 
-  isToday(date) {
-    return dates.eq(date, dates.today(), 'day')
+  isToday(date, timezone) {
+    return dates.eq(date, dates.today(timezone), 'day')
   },
 
   eqTime(dateA, dateB){
@@ -145,8 +150,20 @@ let dates = {
     return Math.ceil((((d - new Date(d.getFullYear(), 0, 1)) / 8.64e7 ) + 1) / 7);
   },
 
-  today() {
-    return dates.startOf(new Date(), 'day')
+  today(timezone) {
+    return (
+      timezone
+        ? new Date(moment().tz(timezone).startOf('day').format(DATE_WITHOUT_TIMEZONE_FORMAT))
+        : dates.startOf(new Date(), 'day')
+    );
+  },
+
+  now(timezone) {
+    return (
+      timezone
+        ? new Date(moment().tz(timezone).format(DATE_WITHOUT_TIMEZONE_FORMAT))
+        : new Date()
+    );
   },
 
   yesterday() {

@@ -54,7 +54,7 @@ class BackgroundCells extends React.Component {
   }
 
   render(){
-    let { range, cellWrapperComponent: Wrapper } = this.props;
+    let { range, cellWrapperComponent: Wrapper, timezone } = this.props;
     let { selecting, startIdx, endIdx } = this.state;
 
     return (
@@ -72,7 +72,7 @@ class BackgroundCells extends React.Component {
                 className={cn(
                   'rbc-day-bg',
                   selected && 'rbc-selected-cell',
-                  dates.isToday(date) && 'rbc-today',
+                  dates.isToday(date, timezone) && 'rbc-today',
                 )}
               />
             </Wrapper>

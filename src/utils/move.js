@@ -1,13 +1,14 @@
+import dates from './dates';
 import invariant from 'invariant';
 import { navigate } from './constants';
 import VIEWS from '../Views';
 
-export default function moveDate(action, date, View) {
+export default function moveDate(action, date, View, timezone) {
   View = typeof View === 'string' ? VIEWS[View] : View;
 
   switch (action) {
     case navigate.TODAY:
-      date = new Date()
+      date = dates.now(timezone);
       break;
     case navigate.DATE:
       break;

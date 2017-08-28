@@ -86,6 +86,7 @@ class DaySlot extends React.Component {
       now,
       selectRangeFormat,
       culture,
+      timezone,
       ...props
     } = this.props
 
@@ -104,12 +105,13 @@ class DaySlot extends React.Component {
         {...props}
         className={cn(
           'rbc-day-slot',
-          dates.isToday(max) && 'rbc-today'
+          dates.isToday(max, timezone) && 'rbc-today'
         )}
         now={now}
         min={min}
         max={max}
         step={step}
+        timezone={timezone}
       >
         {this.renderEvents()}
 
@@ -140,7 +142,7 @@ class DaySlot extends React.Component {
     let EventComponent = eventComponent
 
     let styledEvents = getStyledEvents({
-      events, startAccessor, endAccessor, min, totalMin: this._totalMin, step
+      events, startAccessor, endAccessor, min, totalMin: this._totalMin, max, step
     })
 
     return styledEvents.map(({ event, style }, idx) => {
