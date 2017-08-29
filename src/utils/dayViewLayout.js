@@ -1,6 +1,10 @@
 import { accessor as get } from './accessors'
 import dates from './dates'
 
+const checkIsMultidayStart = (end, max) => end > max;
+
+const checkIsMultidayEnd = (start, min) => start < min;
+
 export function startsBefore(date, min) {
   return dates.lt(dates.merge(min, date), min, 'minutes')
 }
@@ -55,15 +59,26 @@ let isSibling = (idx1, idx2, { events, startAccessor, min, totalMin }) => {
  * but before its end time.
  */
 let isChild = (parentIdx, childIdx, {
-  events, startAccessor, endAccessor, min, totalMin
+  events, startAccessor, endAccessor, min, totalMin, max
 }) => {
   if (isSibling(
     parentIdx, childIdx,
     { events, startAccessor, endAccessor, min, totalMin }
   )) return false;
 
-  let parentEnd = getSlot(events[parentIdx], endAccessor, min, totalMin);
-  let childStart = getSlot(events[childIdx], startAccessor, min, totalMin);
+  const parent = events[parentIdx];
+  const child = events[childIdx];
+
+  const isMultidayEnd = parent && checkIsMultidayEnd(parent[startAccessor], min);
+  const isMultiday = parent && !isMultidayEnd && (parent[startAccessor] !== parent[endAccessor]);
+
+  let parentEnd = getSlot(parent, endAccessor, min, totalMin);
+
+  if (isMultiday) {
+    parentEnd = getSlot({ [endAccessor]: max }, endAccessor, min, totalMin);
+  }
+
+  let childStart = getSlot(child, startAccessor, min, totalMin);
 
   return parentEnd > childStart
 };
@@ -94,14 +109,14 @@ let getSiblings = (idx, {
  * size of the child groups.
  */
 let getChildGroups = (idx, nextIdx, {
-  events, startAccessor, endAccessor, min, totalMin
+  events, startAccessor, endAccessor, min, totalMin, max
 }) => {
   let groups = [];
   let nbrOfColumns = 0;
 
   while (isChild(
     idx, nextIdx,
-    { events, startAccessor, endAccessor, min, totalMin }
+    { events, startAccessor, endAccessor, min, totalMin, max }
   )) {
     let childGroup = [nextIdx];
     let siblingIdx = nextIdx;
@@ -130,8 +145,8 @@ let getYStyles = (idx, {
 }) => {
   let event = events[idx];
 
-  const isMultidayStart = event[endAccessor] > max
-  const isMultidayEnd = event[startAccessor] < min
+  const isMultidayStart = checkIsMultidayStart(event[endAccessor], max);
+  const isMultidayEnd = checkIsMultidayEnd(event[startAccessor], min);
 
   let start = isMultidayEnd ? 0 : getSlot(event, startAccessor, min, totalMin);
   let end = Math.max(getSlot(event, endAccessor, min, totalMin), start + step);
