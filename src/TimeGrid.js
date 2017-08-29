@@ -162,11 +162,7 @@ export default class TimeGrid extends Component {
         let eStart = get(event, startAccessor)
           , eEnd = get(event, endAccessor);
 
-        if (
-          get(event, allDayAccessor)
-          || !dates.eq(eStart, eEnd, 'day')
-          || (dates.isJustDate(eStart) && dates.isJustDate(eEnd)))
-        {
+        if (get(event, allDayAccessor) || dates.diff(eStart, eEnd, 'minutes') > 1440) {
           allDayEvents.push(event)
         }
         else
