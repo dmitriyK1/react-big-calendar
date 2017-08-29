@@ -156,7 +156,6 @@ export default class TimeGrid extends Component {
     let allDayEvents = []
       , rangeEvents = [];
 
-    // TODO: add check to put multiday event in rangeEvents
     events.forEach(event => {
       if (inRange(event, start, end, this.props)) {
         let eStart = get(event, startAccessor)
