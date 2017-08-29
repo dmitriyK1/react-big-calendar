@@ -130,9 +130,8 @@ let getYStyles = (idx, {
 }) => {
   let event = events[idx];
 
-  const isMultidayCont = (event[endAccessor] > max ) && (event[startAccessor] < min);
-  const isMultidayStart = (event[endAccessor] > max) && !isMultidayCont;
-  const isMultidayEnd = event[startAccessor] < min && !isMultidayCont;
+  const isMultidayStart = event[endAccessor] > max
+  const isMultidayEnd = event[startAccessor] < min
 
   let start = isMultidayEnd ? 0 : getSlot(event, startAccessor, min, totalMin);
   let end = Math.max(getSlot(event, endAccessor, min, totalMin), start + step);
@@ -141,7 +140,6 @@ let getYStyles = (idx, {
 
   return {
     isMultidayStart,
-    isMultidayCont,
     isMultidayEnd,
     top,
     height: bottom - top
@@ -231,11 +229,10 @@ export default function getStyledEvents ({
         xOffset = 0;
       }
 
-      let { top, height, isMultidayStart, isMultidayCont, isMultidayEnd } = getYStyles(eventIdx, helperArgs);
+      let { top, height, isMultidayStart, isMultidayEnd } = getYStyles(eventIdx, helperArgs);
 
       event.smallEvent = isSmallEvent(width);
       event.isMultidayStart = isMultidayStart;
-      event.isMultidayCont = isMultidayCont;
       event.isMultidayEnd = isMultidayEnd;
 
       styledEvents[eventIdx] = {

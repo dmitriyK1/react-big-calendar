@@ -20,6 +20,8 @@ let dates = {
 
   SECONDS_IN_DAY: 24 * 60 * 60,
 
+  MINUTES_IN_DAY: 1440,
+
   monthsInYear(year){
     let date = new Date(year, 0, 1)
 
