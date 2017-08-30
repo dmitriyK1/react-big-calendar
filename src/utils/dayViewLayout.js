@@ -70,7 +70,7 @@ let isChild = (parentIdx, childIdx, {
   const child = events[childIdx];
 
   const isMultidayEnd = parent && checkIsMultidayEnd(parent[startAccessor], min);
-  const isMultiday = parent && !isMultidayEnd && (parent[startAccessor] !== parent[endAccessor]);
+  const isMultiday = parent && !isMultidayEnd && (!dates.sameDate(parent[startAccessor], parent[endAccessor]));
 
   let parentEnd = getSlot(parent, endAccessor, min, totalMin);
 
