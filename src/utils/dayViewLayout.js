@@ -47,10 +47,14 @@ let isSibling = (idx1, idx2, { events, startAccessor, min, totalMin }) => {
 
   if (!event1 || !event2) return false;
 
+  const isSameDate = dates.sameDate(event1[startAccessor], event2[startAccessor]);
+
+  if (!isSameDate) return false;
+
   let start1 = getSlot(event1, startAccessor, min, totalMin);
   let start2 = getSlot(event2, startAccessor, min, totalMin);
 
-  return (Math.abs(start1 - start2) < 30)
+  return (Math.abs(start1 - start2) < 30);
 };
 
 /**

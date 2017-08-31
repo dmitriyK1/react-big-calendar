@@ -85,8 +85,8 @@ let dates = {
     return dates.milliseconds(date, dates.milliseconds(time))
   },
 
-  sameDate(start, end) {
-    return moment(start).isSame(end, 'date');
+  sameDate(date, date2) {
+    return moment(date).isSame(date2, 'date');
   },
 
   sameMonth(dateA, dateB){
