@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import TimeSlot from './TimeSlot'
 import date from './utils/dates.js'
 import localizer from './localizer'
-import { elementType } from './utils/propTypes'
+import { elementType, dateFormat } from './utils/propTypes'
 
 export default class TimeSlotGroup extends Component {
   static propTypes = {
@@ -13,7 +13,8 @@ export default class TimeSlotGroup extends Component {
     value: PropTypes.instanceOf(Date).isRequired,
     showLabels: PropTypes.bool,
     isNow: PropTypes.bool,
-    timeGutterFormat: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+    slotPropGetter: PropTypes.func,
+    timeGutterFormat: dateFormat,
     culture: PropTypes.string
   }
   static defaultProps = {
