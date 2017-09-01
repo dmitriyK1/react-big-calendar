@@ -152,8 +152,14 @@ let getYStyles = (idx, {
   const isMultidayStart = checkIsMultidayStart(event[endAccessor], max);
   const isMultidayEnd = checkIsMultidayEnd(event[startAccessor], min);
 
-  let start = isMultidayEnd ? 0 : getSlot(event, startAccessor, min, totalMin);
-  let end = Math.max(getSlot(event, endAccessor, min, totalMin), start + step);
+  let start = isMultidayEnd
+    ? 0
+    : getSlot(event, startAccessor, min, totalMin);
+
+  let end = isMultidayStart
+    ? totalMin
+    : Math.max(getSlot(event, endAccessor, min, totalMin), start + step);
+
   let top = start / totalMin * 100;
   let bottom = end / totalMin * 100;
 
