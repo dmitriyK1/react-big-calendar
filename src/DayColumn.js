@@ -249,6 +249,10 @@ class DaySlot extends React.Component {
       if (dates.eq(initial, current, 'minutes'))
         current = dates.add(current, step, 'minutes')
 
+      if (max.getSeconds() === 59) {
+          max.setSeconds(max.getSeconds() + 1);
+      }
+
       let start = dates.max(min, dates.min(initial, current))
       let end = dates.min(max, dates.max(initial, current))
 
