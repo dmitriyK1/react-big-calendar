@@ -87,14 +87,19 @@ class DaySlot extends React.Component {
       selectRangeFormat,
       culture,
       timezone,
+      timeslots,
       ...props
     } = this.props
 
     this._totalMin = dates.diff(min, max, 'minutes')
 
     let { selecting, startSlot, endSlot } = this.state
-    let style = this._slotStyle(startSlot, endSlot)
+    let endLastSlot;
+    if (this.state.endDate && max.toString() === this.state.endDate.toString()) {
+      endLastSlot = 24 * timeslots * step - 1;
+    }
 
+    let style = this._slotStyle(startSlot, endLastSlot || endSlot)
     let selectDates = {
       start: this.state.startDate,
       end: this.state.endDate
