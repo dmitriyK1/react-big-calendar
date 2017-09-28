@@ -159,7 +159,7 @@ class DaySlot extends React.Component {
       if (eventPropGetter)
         var { style: xStyle, className } = eventPropGetter(event, start, end, _isSelected)
 
-      let { height, top, width, xOffset } = style
+      let { height, top, width, xOffset, padding } = style
 
       return (
         <EventWrapper event={event} key={'evt_' + idx}>
@@ -168,6 +168,7 @@ class DaySlot extends React.Component {
               ...xStyle,
               top: `calc(${top}% + 1px)`,
               height: `calc(${height}% - 1px)`,
+              padding: `${padding}`,
               [isRtl ? 'right' : 'left']: `${Math.max(0, xOffset)}%`,
               width: `${width}%`
             }}

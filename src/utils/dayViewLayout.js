@@ -148,17 +148,25 @@ let getYStyles = (idx, {
   events, startAccessor, endAccessor, min, totalMin, max, step
 }) => {
   let event = events[idx];
+    const isLastSlotOfTheDayEnd = +event.end === +min;
 
   const isMultidayStart = checkIsMultidayStart(event[endAccessor], max);
   const isMultidayEnd = checkIsMultidayEnd(event[startAccessor], min);
+
 
   let start = isMultidayEnd
     ? 0
     : getSlot(event, startAccessor, min, totalMin);
 
-  let end = isMultidayStart
-    ? totalMin
-    : Math.max(getSlot(event, endAccessor, min, totalMin), start + step);
+    let end = isMultidayStart
+        ? totalMin
+        : Math.max(getSlot(event, endAccessor, min, totalMin), start + step);
+
+  if (isLastSlotOfTheDayEnd) {
+    end = isMultidayStart
+        ? totalMin
+        : Math.max(getSlot(event, endAccessor, min, totalMin), start);
+  }
 
   let top = start / totalMin * 100;
   let bottom = end / totalMin * 100;
@@ -167,7 +175,8 @@ let getYStyles = (idx, {
     isMultidayStart,
     isMultidayEnd,
     top,
-    height: bottom - top
+    height: bottom - top,
+    padding: isLastSlotOfTheDayEnd && 0,
   }
 };
 
@@ -254,7 +263,7 @@ export default function getStyledEvents ({
         xOffset = 0;
       }
 
-      let { top, height, isMultidayStart, isMultidayEnd } = getYStyles(eventIdx, helperArgs);
+      let { top, height, isMultidayStart, isMultidayEnd, padding } = getYStyles(eventIdx, helperArgs);
 
       event.smallEvent = isSmallEvent(width);
       event.isMultidayStart = isMultidayStart;
@@ -266,7 +275,8 @@ export default function getStyledEvents ({
           top,
           height,
           width,
-          xOffset
+          xOffset,
+          padding,
         }
       }
     });
@@ -313,7 +323,7 @@ export default function getStyledEvents ({
           event.groupEnd = i === group.length - 1;
         }
 
-        let { top, height } = getYStyles(eventIdx, helperArgs);
+        let { top, height, padding } = getYStyles(eventIdx, helperArgs);
 
         event.smallEvent = isSmallEvent(width);
 
@@ -323,7 +333,8 @@ export default function getStyledEvents ({
             top,
             height,
             width,
-            xOffset
+            xOffset,
+            padding,
           }
         }
       })
