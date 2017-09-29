@@ -52,9 +52,9 @@ export default class TimeColumn extends Component {
   }
 
   render() {
-    const { className, children, style, min, max, step, timeslots, timezone } = this.props;
-    const totalMin = dates.diff(min, max, 'minutes')
-    const numGroups = Math.ceil(totalMin / (step * timeslots))
+    const { className, children, style, min, step, timeslots, timezone } = this.props;
+    // const totalMin = dates.diff(min, max, 'minutes')
+    // const numGroups = Math.ceil(totalMin / (step * timeslots))
     const renderedSlots = []
     const groupLengthInMinutes = step * timeslots
 
@@ -64,7 +64,8 @@ export default class TimeColumn extends Component {
 
     const now = dates.now(timezone);
 
-    for (var i = 0; i < numGroups; i++) {
+    // for (var i = 0; i < numGroups; i++) {
+      for (var i = 0; i < 24; i++) { // 24 hours in a day
       isNow = dates.inRange(
           now
         , date
