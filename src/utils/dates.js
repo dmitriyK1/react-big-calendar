@@ -121,12 +121,31 @@ let dates = {
     if (!unit || unit === 'milliseconds')
       return Math.abs(+dateA - +dateB)
 
-    // the .round() handles an edge case
-    // with DST where the total won't be exact
-    // since one day in the range may be shorter/longer by an hour
-    return Math.round(Math.abs(
-      (+dates.startOf(dateA, unit) / MILLI[unit]) - (+dates.startOf(dateB, unit) / MILLI[unit])
-    ))
+      // disabling DST for grid rendering --->>>
+      const tz = moment.tz.guess();
+      const tzOffsetDateA = moment.tz.zone(tz).offset(Date.parse(dateA));
+      const tzOffsetDateB = moment.tz.zone(tz).offset(Date.parse(dateB));
+      const dstOffset = tzOffsetDateA - tzOffsetDateB;
+
+      if (dstOffset < 0) {
+        const dateANorm = moment(dateA).add(-dstOffset, 'minutes').toDate();
+        return Math.round(Math.abs(
+            (+dates.startOf(dateANorm, unit) / MILLI[unit]) - (+dates.startOf(dateB, unit) / MILLI[unit])
+        ))
+      } else {
+        const dateBNorm = moment(dateB).add(dstOffset, 'minutes').toDate();
+        return Math.round(Math.abs(
+            (+dates.startOf(dateA, unit) / MILLI[unit]) - (+dates.startOf(dateBNorm, unit) / MILLI[unit])
+        ))
+      }
+      // disabling DST for grid rendering <<<---
+
+      // the .round() handles an edge case
+      // with DST where the total won't be exact
+      // since one day in the range may be shorter/longer by an hour
+      return Math.round(Math.abs(
+        (+dates.startOf(dateA, unit) / MILLI[unit]) - (+dates.startOf(dateB, unit) / MILLI[unit])
+      ))
   },
 
   total(date, unit) {
