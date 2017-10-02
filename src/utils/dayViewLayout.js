@@ -147,25 +147,25 @@ let getChildGroups = (idx, nextIdx, {
 let getYStyles = (idx, {
   events, startAccessor, endAccessor, min, totalMin, max, step
 }) => {
-  let event = events[idx];
-    const isLastSlotOfTheDayEnd = +event.end === +min;
+  let ev = events[idx];
+    const isLastSlotOfTheDayEnd = +ev.end === +min;
 
-  const isMultidayStart = checkIsMultidayStart(event[endAccessor], max);
-  const isMultidayEnd = checkIsMultidayEnd(event[startAccessor], min);
+  const isMultidayStart = checkIsMultidayStart(ev[endAccessor], max);
+  const isMultidayEnd = checkIsMultidayEnd(ev[startAccessor], min);
 
 
   let start = isMultidayEnd
     ? 0
-    : getSlot(event, startAccessor, min, totalMin);
+    : getSlot(ev, startAccessor, min, totalMin);
 
     let end = isMultidayStart
         ? totalMin
-        : Math.max(getSlot(event, endAccessor, min, totalMin), start + step);
+        : Math.max(getSlot(ev, endAccessor, min, totalMin), start + step);
 
   if (isLastSlotOfTheDayEnd) {
     end = isMultidayStart
         ? totalMin
-        : Math.max(getSlot(event, endAccessor, min, totalMin), start);
+        : Math.max(getSlot(ev, endAccessor, min, totalMin), start);
   }
 
   let top = start / totalMin * 100;
