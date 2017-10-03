@@ -140,16 +140,23 @@ let getChildGroups = (idx, nextIdx, {
   return { childGroups: groups, nbrOfChildColumns: nbrOfColumns }
 };
 
+let getIfLastSlotOfTheDayEnd = (end, min, timezone) => {
+  const localTZone = dates.getLocalTimezone();
+  const localTZoneOffset = dates.getTimezoneOffset(end, localTZone);
+  const calendarTZoneOffset = dates.getTimezoneOffset(end, timezone);
+  const normalizedEnd = dates.getTZNormalizedEndDate(end, localTZoneOffset - calendarTZoneOffset);
+  return +normalizedEnd === +min;
+}
+
 /**
  * Returns height and top offset, both in percentage, for an event at
  * the specified index.
  */
 let getYStyles = (idx, {
-  events, startAccessor, endAccessor, min, totalMin, max, step
+  events, startAccessor, endAccessor, min, totalMin, max, step, timezone
 }) => {
   let ev = events[idx];
-    const isLastSlotOfTheDayEnd = +ev.end === +min;
-
+  const isLastSlotOfTheDayEnd = getIfLastSlotOfTheDayEnd(ev.end, min, timezone);
   const isMultidayStart = checkIsMultidayStart(ev[endAccessor], max);
   const isMultidayEnd = checkIsMultidayEnd(ev[startAccessor], min);
 
@@ -223,10 +230,10 @@ const resetEvent = (event) => {
  * traversed, so the cursor will be moved past all of them.
  */
 export default function getStyledEvents ({
-  events: unsortedEvents, startAccessor, endAccessor, min, totalMin, step, max
+  events: unsortedEvents, startAccessor, endAccessor, min, totalMin, step, max, timezone
 }) {
   let events = sort(unsortedEvents, { startAccessor, endAccessor });
-  let helperArgs = { events, startAccessor, endAccessor, min, totalMin, step, max };
+  let helperArgs = { events, startAccessor, endAccessor, min, totalMin, step, max, timezone };
   let styledEvents = [];
   let idx = 0;
 
