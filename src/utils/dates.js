@@ -148,6 +148,22 @@ let dates = {
       ))
   },
 
+  getTimezoneOffset(date, timezone) {
+      return moment.tz.zone(timezone).offset(Date.parse(date));
+  },
+
+  getLocalTimezone() {
+    return moment.tz.guess();
+  },
+
+  getTZNormalizedEndDate(end, offset) {
+    let endDate = end;
+    if (moment(end).seconds() !== 0) {
+        endDate = moment(endDate).seconds(0);
+    }
+    return moment(endDate).add(offset, 'minutes').toDate();
+  },
+
   total(date, unit) {
     let ms = date.getTime()
       , div = 1;

@@ -132,6 +132,7 @@ class DaySlot extends React.Component {
       , min
       , max
       , culture
+      , timezone
       , eventPropGetter
       , selected, eventTimeRangeFormat, eventComponent
       , eventWrapperComponent: EventWrapper
@@ -142,7 +143,7 @@ class DaySlot extends React.Component {
     let EventComponent = eventComponent
 
     let styledEvents = getStyledEvents({
-      events, startAccessor, endAccessor, min, totalMin: this._totalMin, max, step
+      events, startAccessor, endAccessor, min, totalMin: this._totalMin, max, step, timezone
     })
 
     return styledEvents.map(({ event, style }, idx) => {
