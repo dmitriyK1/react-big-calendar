@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { findDOMNode } from 'react-dom';
+import moment from 'moment';
 import cn from 'classnames';
 
 import Selection, { getBoundsForNode, isEvent } from './Selection';
@@ -95,10 +96,12 @@ class DaySlot extends React.Component {
     let { selecting, startSlot, endSlot } = this.state
     let style = this._slotStyle(startSlot, endSlot)
 
+    const isLastSlotEvent = moment(this.state.endDate).format('h:mm:ss a') === '11:59:59 pm'
+
     let selectDates = {
       start: this.state.startDate,
-      end: this.state.endDate
-    };
+      end: isLastSlotEvent ? moment(this.state.endDate).add(1, 'second').toISOString() : this.state.endDate,
+    }
 
     return (
       <TimeColumn
