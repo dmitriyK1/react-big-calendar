@@ -100,7 +100,7 @@ class DaySlot extends React.Component {
 
     let selectDates = {
       start: this.state.startDate,
-      end: isLastSlotEvent ? moment(this.state.endDate).add(1, 'second').toISOString() : this.state.endDate,
+      end: isLastSlotEvent ? moment(this.state.endDate).add(1, 'second') : this.state.endDate,
     }
 
     return (
