@@ -194,7 +194,7 @@ let dates = {
   today(timezone) {
     return (
       timezone
-        ? new Date(moment().tz(timezone).startOf('day').format(DATE_WITHOUT_TIMEZONE_FORMAT))
+        ? moment(moment().tz(timezone).startOf('day').format(DATE_WITHOUT_TIMEZONE_FORMAT)).toDate()
         : dates.startOf(new Date(), 'day')
     );
   },
@@ -202,7 +202,7 @@ let dates = {
   now(timezone) {
     return (
       timezone
-        ? new Date(moment().tz(timezone).format(DATE_WITHOUT_TIMEZONE_FORMAT))
+        ? moment(moment().tz(timezone).format(DATE_WITHOUT_TIMEZONE_FORMAT)).toDate()
         : new Date()
     );
   },
