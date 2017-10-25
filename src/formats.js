@@ -26,15 +26,11 @@ let formats = {
   selectRangeFormat: timeRangeFormat,
   eventTimeRangeFormat: timeRangeFormat,
 
-  timeGutterFormat: 'h:mm tt',
-
-  monthHeaderFormat: 'MMMM yyyy',
   dayHeaderFormat: 'dddd MMM dd',
   dayRangeHeaderFormat: weekRangeFormat,
   agendaHeaderFormat: dateRangeFormat,
 
   agendaDateFormat: 'ddd MMM dd',
-  agendaTimeFormat: 'hh:mm tt',
   agendaTimeRangeFormat: timeRangeFormat
 }
 
